@@ -7,8 +7,12 @@ namespace BizChat.Models
         [Key] public int Id { get; set; }
         [Required] public string? Name { get; set; }
 
+        public int? ServerId { get; set; }
+
         public bool DeleteMessagePerms { get; set; } = false;
         public bool KickUserPerms { get; set; } = false;
         public bool BanUserPerms { get; set; } = false;
+
+
     }
 }
