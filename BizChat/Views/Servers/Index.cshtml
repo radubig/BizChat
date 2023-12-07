@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2 class="text-center">Index</h2>
+
+@foreach(BizChat.Models.Server server in ViewBag.Servers)
+{
+    <p><b>@server.Name</b></p>
+}
+

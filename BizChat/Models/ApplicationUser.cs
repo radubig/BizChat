@@ -5,7 +5,7 @@ namespace BizChat.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public virtual ICollection<Server>? UserServers { get; set; }
+        public virtual ICollection<ServerUser>? UserServers { get; set; }
         public virtual ICollection<Message>? Messages { get; set; }
         
         public string? Name { get; set; }
