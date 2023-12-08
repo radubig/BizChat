@@ -1,12 +1,16 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+	ViewData["Title"] = "Index";
 }
 
-<h2 class="text-center">Index</h2>
 
-@foreach(BizChat.Models.Server server in ViewBag.Servers)
-{
-    <p><b>@server.Name</b></p>
-}
+
+<div class="border border-dark" style="grid-column: 1/1;  height: 100%; text-align: center; text-wrap: wrap">
+	<partial name="_ServerListPartial" />
+</div>
+<div class="border border-dark" style="grid-column: 2/2;  height: 100%; text-align: center; text-wrap: wrap">
+	<div>
+		Placeholder
+	</div>
+</div>
+
 

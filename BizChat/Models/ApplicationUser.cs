@@ -8,7 +8,6 @@ namespace BizChat.Models
         public virtual ICollection<ServerUser>? UserServers { get; set; }
         public virtual ICollection<Message>? Messages { get; set; }
         
-        public string? Name { get; set; }
         
         
     }

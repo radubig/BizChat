@@ -23,6 +23,7 @@ namespace BizChat.Controllers
             _roleManager = roleManager;
         }
 
+        // Un user poate nu vrea sa aiba propriul server, zic sa renuntam la asta
         private void AddDefaultServer()
         {
             string UserId = _userManager.GetUserId(User);
@@ -44,16 +45,19 @@ namespace BizChat.Controllers
 
         public IActionResult Index()
         {
-            string UserId = _userManager.GetUserId(User);
 
+            string UserId = _userManager.GetUserId(User);
+            Console.WriteLine("\n User ID :");
+            Console.WriteLine(UserId);
             // Find user servers
             var servers = db.Servers.Where(s => s.Users.Where(su => su.UserId == UserId).Count() > 0);
+            /*
             if(!servers.Any())
             {
                 AddDefaultServer();
                 servers = db.Servers.Where(s => s.Users.Where(su => su.UserId == UserId).Count() > 0);
             }
-            
+            */
             ViewBag.Servers = servers;
             return View(servers);
         }
