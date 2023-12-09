@@ -44,17 +44,11 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-/*
-app.MapControllerRoute(
-    name: "test",
-    pattern: "Servers",
-    defaults: new { controller = "Servers", action = "Index" }
-);
-*/
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Servers}/{action=Index}/{id?}");
+
+
 app.MapRazorPages();
 
 app.Run();

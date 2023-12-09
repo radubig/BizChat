@@ -51,13 +51,6 @@ namespace BizChat.Controllers
             Console.WriteLine(UserId);
             // Find user servers
             var servers = db.Servers.Where(s => s.Users.Where(su => su.UserId == UserId).Count() > 0);
-            /*
-            if(!servers.Any())
-            {
-                AddDefaultServer();
-                servers = db.Servers.Where(s => s.Users.Where(su => su.UserId == UserId).Count() > 0);
-            }
-            */
             ViewBag.Servers = servers;
             return View(servers);
         }
