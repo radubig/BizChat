@@ -9,13 +9,49 @@
 <!-- Schema asta am furat-o de la _LoginPartial -->
 @if (SignInManager.IsSignedIn(User))
 {
-	<div class="border border-dark" style="grid-column: 1/1;  height: 100%; text-align: center; word-wrap: anywhere">
+	<div class="border border-dark" style="grid-column: 1/1;  height: 100%; text-align: center; word-wrap: anywhere; display: flex; flex-direction: column">
 		<partial name="_ServerListPartial" />
 	</div>
 	<div class="border border-dark" style="grid-column: 2/2;  height: 100%; text-align: center; word-wrap: anywhere">
-		<div>
-			Placeholder
-		</div>
+		@if (ViewBag.ServerId == null)
+		{
+			<div>
+				Placeholder
+			</div>
+		}
+		else
+		{ <!-- Stiu ca arata oribil, rezolvam noi -->
+			<div style="height: 100%; display: grid; grid-template-rows: 4% 96%; grid-template-columns: 20% 60% 20%">
+				<div class="border" style="grid-row: 1/1; grid-column: 1/2; display: flex">
+					<i class="bi bi-gear">
+					</i><p> Server</p>
+				</div>
+				<div class="border"  style="grid-row: 1/1; grid-column: 3/3; text-align: center; display: flex; justify-content: center; align-items: center">
+					<p class="m-0"> Search </p> <i class="bi bi-search"></i>
+				</div>
+				<div class="border p-1"  style="grid-row: 2/2; grid-column: 1; text-align: center; display: flex; flex-direction: column">
+					@foreach (BizChat.Models.Channel channel in ViewBag.Channels)
+					{
+						<div> #@channel.Name </div>
+					}
+				</div>
+				<div class="border" style="grid-row: 2/2; grid-column: 2/2; display: grid; grid-template-rows: 85% 15%">
+					<div class="border" style="grid-row: 1/1; display: flex; text-align: center; justify-content: center; align-items: center">
+						<b>Continut channel (mesaje) </b>
+					</div>
+					<div class="border" style="grid-row: 2/2; display: flex; justify-content: center; align-items: center; text-align: center">
+						<p> Bara de mesaje</p>
+					</div>
+				</div>
+				<div style="grid-row: 2/2; grid-column: 3/3; display:flex; flex-direction: column">
+					@foreach (var user in ViewBag.ServerMembers)
+					{
+						<!-- Aici va trebui sa diferentiam utilizatorii cu roluri de server diferite-->
+						<p> @user.UserName </p>
+					}
+				</div>
+			</div>
+		}
 	</div>
 }
 else

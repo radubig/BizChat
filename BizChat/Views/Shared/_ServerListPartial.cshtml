@@ -2,5 +2,5 @@
 
 @foreach (BizChat.Models.Server server in ViewBag.Servers)
 {
-    <p><b>@server.Name</b></p>
+    <a style="text-decoration: inherit; color: inherit; border: solid" asp-controller="Servers" asp-action="Index" asp-route-id="@server.Id">@server.Name</a>
 }

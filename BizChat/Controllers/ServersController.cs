@@ -2,8 +2,10 @@
 using BizChat.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace BizChat.Controllers
 {
@@ -43,16 +45,29 @@ namespace BizChat.Controllers
             db.SaveChanges();
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? id)
         {
-
-            string UserId = _userManager.GetUserId(User);
-            Console.WriteLine("\n User ID :");
-            Console.WriteLine(UserId);
-            // Find user servers
-            var servers = db.Servers.Where(s => s.Users.Where(su => su.UserId == UserId).Count() > 0);
-            ViewBag.Servers = servers;
-            return View(servers);
+			string UserId = _userManager.GetUserId(User); 
+			var servers = db.Servers.Where(s => s.Users.Where(su => su.UserId == UserId).Count() > 0);
+			ViewBag.Servers = servers;
+			if (id == null)
+            {
+                Console.WriteLine("\n User ID :");
+                Console.WriteLine(UserId);
+                // Find user servers
+                return View(servers);
+            }
+            else
+            {
+				ViewBag.ServerId = id;
+				var channels = db.Channels.Where(channel => channel.ServerId == id);
+				ViewBag.Channels = channels;
+                var servermembers = db.ServerUsers.Where(su => su.ServerId == id);
+				ViewBag.ServerMembers = db.ApplicationUsers.
+										Where(user => servermembers.Where(sm => sm.UserId == user.Id).First() != null);
+				return View(servers);
+			}
         }
+
     }
 }
