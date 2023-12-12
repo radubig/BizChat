@@ -65,6 +65,8 @@ namespace BizChat.Controllers
                 var servermembers = db.ServerUsers.Where(su => su.ServerId == id);
 				ViewBag.ServerMembers = db.ApplicationUsers.
 										Where(user => servermembers.Where(sm => sm.UserId == user.Id).First() != null);
+				IQueryable<Category>? categories = db.Categories.Where(c => c.ServerId == id);
+				ViewBag.Categories = categories;
 				return View(servers);
 			}
         }

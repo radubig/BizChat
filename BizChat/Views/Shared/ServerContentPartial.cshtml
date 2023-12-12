@@ -1,0 +1,38 @@
+﻿<div style="height: 100%; display: grid; grid-template-rows: 4% 96%; grid-template-columns: 20% 60% 20%">
+	<div class="border" style="grid-row: 1/1; grid-column: 1/2; display: flex">
+		<i class="bi bi-gear">
+		</i><p> Server</p>
+	</div>
+	<div class="border" style="grid-row: 1/1; grid-column: 3/3; text-align: center; display: flex; justify-content: center; align-items: center">
+		<p class="m-0"> Search </p> <i class="bi bi-search"></i>
+	</div>
+	<div class="border p-1" style="grid-row: 2/2; grid-column: 1; text-align: center; display: flex; flex-direction: column">
+		@foreach (BizChat.Models.Category category in ViewBag.Categories)
+		{
+			<div>
+			<a style="text-decoration: inherit; color: inherit;" asp-controller="Category" asp-action="Index" asp-route-id="@category.Id">@category.CategoryName</a>
+			<div style="text-align: left; padding-left: 2em;">
+			@foreach (BizChat.Models.Channel channel in ViewBag.Channels) if(channel.CategoryId == category.Id)
+			{
+				<p> <b>#</b> @channel.Name </p>
+			}
+			</div>
+			</div>
+		}
+	</div>
+	<div class="border" style="grid-row: 2/2; grid-column: 2/2; display: grid; grid-template-rows: 85% 15%">
+		<div class="border" style="grid-row: 1/1; display: flex; text-align: center; justify-content: center; align-items: center">
+			<b>Continut channel (mesaje) </b>
+		</div>
+		<div class="border" style="grid-row: 2/2; display: flex; justify-content: center; align-items: center; text-align: center">
+			<p> Bara de mesaje</p>
+		</div>
+	</div>
+	<div style="grid-row: 2/2; grid-column: 3/3; display:flex; flex-direction: column">
+		@foreach (var user in ViewBag.ServerMembers)
+		{
+			<!-- Aici va trebui sa diferentiam utilizatorii cu roluri de server diferite-->
+			<p> @user.UserName </p>
+		}
+	</div>
+</div>
