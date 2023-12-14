@@ -18,14 +18,33 @@ body {
 }
 
 .category {
-    border: 2px solid transparent;
+    border: 1px solid transparent;
     border-radius: 5px;
+    display: flex;
+    padding-left: 5px;
+    padding-right: 5px;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.category > .category-buttons {
+    visibility: hidden;
 }
 
 .category:hover {
-    border: 2px solid;
+    border: 1px solid;
+}
+
+.category:hover > .category-buttons {
+    visibility: visible;
 }
 
 .channel {
-    padding-left: 1rem;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding-left: 5px;
+}
+
+.channel:hover {
+    border: 1px solid;
 }

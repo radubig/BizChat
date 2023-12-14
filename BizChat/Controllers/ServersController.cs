@@ -45,30 +45,35 @@ namespace BizChat.Controllers
             db.SaveChanges();
         }
 
-        public IActionResult Index(int? id)
+        public IActionResult Index(int? serverId, int? channelId)
         {
 			string UserId = _userManager.GetUserId(User); 
 			var servers = db.Servers.Where(s => s.Users.Where(su => su.UserId == UserId).Count() > 0);
 			ViewBag.Servers = servers;
-			if (id == null)
+            if (serverId != null)
             {
-                Console.WriteLine("\n User ID :");
-                Console.WriteLine(UserId);
-                // Find user servers
-                return View(servers);
-            }
-            else
-            {
-				ViewBag.ServerId = id;
-				var channels = db.Channels.Where(channel => channel.ServerId == id);
+				ViewBag.ServerId = serverId;
+
+                // retrieve all channels
+				var channels = db.Channels.Where(channel => channel.ServerId == serverId);
 				ViewBag.Channels = channels;
-                var servermembers = db.ServerUsers.Where(su => su.ServerId == id);
+
+                // retrieve all server members
+                var servermembers = db.ServerUsers.Where(su => su.ServerId == serverId);
 				ViewBag.ServerMembers = db.ApplicationUsers.
 										Where(user => servermembers.Where(sm => sm.UserId == user.Id).First() != null);
-				IQueryable<Category>? categories = db.Categories.Where(c => c.ServerId == id);
+
+                // retrieve all categories of the server
+				IQueryable<Category>? categories = db.Categories.Where(c => c.ServerId == serverId);
 				ViewBag.Categories = categories;
-				return View(servers);
+
+                if (channelId != null)
+                {
+                    Channel? selectedChannel = db.Channels.Find(channelId);
+                    ViewBag.selectedChannel = selectedChannel;
+                }
 			}
+            return View();
         }
 
     }

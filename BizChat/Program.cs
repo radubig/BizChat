@@ -46,7 +46,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Servers}/{action=Index}/{id?}");
+    pattern: "{controller=Servers}/{action=Index}/{serverId?}/{channelId?}");
 
 
 app.MapRazorPages();

@@ -4,10 +4,10 @@
 {
     @if (ViewBag.ServerId != null && server.Id == ViewBag.ServerId)
     {
-        <a style="text-decoration: inherit; color: inherit; background-color:lightgreen; border: 1px solid" asp-controller="Servers" asp-action="Index" asp-route-id="@server.Id">@server.Name</a>
+        <a style="text-decoration: inherit; color: inherit; background-color:lightgreen; border: 1px solid" href="/Servers/Index/@server.Id">@server.Name</a>
     }
     else
     {
-        <a style="text-decoration: inherit; color: inherit; border: 1px solid" asp-controller="Servers" asp-action="Index" asp-route-id="@server.Id">@server.Name</a>
+        <a style="text-decoration: inherit; color: inherit; border: 1px solid" href="/Servers/Index/@server.Id">@server.Name</a>
     }
 }
