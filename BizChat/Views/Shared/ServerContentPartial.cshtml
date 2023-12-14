@@ -1,16 +1,18 @@
 ﻿<div style="height: 100%; display: grid; grid-template-rows: 4% 96%; grid-template-columns: 20% 60% 20%">
 	<div class="border" style="grid-row: 1/1; grid-column: 1/2; display: flex">
-		<p><span class="bi bi-gear" style="padding-left: 5px"></span> Server</p>
+		<button><span class="bi bi-gear" style="padding-left: 5px"></span> Server Settings </button>
+	</div>
+	<div class="border" style="grid-row: 1/1; grid-column: 2; text-align: left; display: flex; gap: 1em">
+		<span style="padding-left: 5px"> <span class="fa-solid fa-hashtag"></span> <b>SelectedChannel</b></span>
+		<span>Descriere channel</span>
 	</div>
 	<div class="border" style="grid-row: 1/1; grid-column: 3/3; text-align: center; display: flex; justify-content: center; align-items: center">
-		<p class="m-0"> Search </p> <i class="bi bi-search"></i>
+		<p class="m-0"> <span class="fa-solid fa-magnifying-glass"></span> Search </p>
 	</div>
 	<div class="border p-1" style="grid-row: 2/2; grid-column: 1; text-align: center; display: flex; flex-direction: column">
 		@foreach (BizChat.Models.Category category in ViewBag.Categories)
 		{
-			<div class="category">
-				<a style="text-decoration: inherit; color: inherit;" asp-controller="Category" asp-action="Index" asp-route-id="@category.Id">@category.CategoryName</a>
-			</div>
+			<div class="category">@category.CategoryName</div>
 			<div style="text-align: left;">
 			@foreach (BizChat.Models.Channel channel in ViewBag.Channels) if(channel.CategoryId == category.Id)
 			{
