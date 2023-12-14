@@ -16,3 +16,16 @@ html {
 body {
     margin-bottom: 60px;
 }
+
+.category {
+    border: 2px solid transparent;
+    border-radius: 5px;
+}
+
+.category:hover {
+    border: 2px solid;
+}
+
+.channel {
+    padding-left: 1rem;
+}
