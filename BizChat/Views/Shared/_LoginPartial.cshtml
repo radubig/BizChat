@@ -14,27 +14,33 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@User.Identity?.Name</a>
+        <form class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+            <button type="submit" class="nav-link btn btn-link text-dark">@User.Identity?.Name</button>
+        </form>
     </li>
-    <!-- Nu inteleg de ce e stramb, cred ca e blestemat -->
     <li class="nav-item">
-        <form  class="form" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Servers", new { area = "" })"
-                  style="display: flex; align-items: center; justify-content: center">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+        <form class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Servers", new { area = "" })">
+            <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
         </form>
     </li>
 }
 else
 {
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        <form class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">
+            <button type="submit" class="nav-link btn btn-link text-dark">Register</button>
+        </form>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        <form class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">
+            <button type="submit" class="nav-link btn btn-link text-dark">Login</button>
+        </form>
     </li>
 }
     <!-- Ca sa ne intoarcem usor la index -->
     <li class="nav-item">
-        <a  class="nav-link text-dark" asp-controller="Servers" asp-action="Index"> Server/Index </a>
+        <form class="nav-link text-dark" asp-controller="Servers" asp-action="Index">
+            <button type="submit" class="nav-link btn btn-link text-dark"> Server/Index </button>
+        </form>
     </li>
 </ul>

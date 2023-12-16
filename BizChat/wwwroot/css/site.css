@@ -48,3 +48,8 @@ body {
 .channel:hover {
     border: 1px solid;
 }
+
+button {
+    background-color: inherit;
+    border: inherit;
+}
