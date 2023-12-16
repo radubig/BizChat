@@ -13,6 +13,5 @@ namespace BizChat.Models
         public bool? IsOwner { get; set; }
         public virtual ApplicationUser? User { get; set; }
         public virtual Server? Server { get; set; }
-        // maybe also add ServerRole here?
     }
 }

@@ -1,14 +1,24 @@
 using ArticlesApp.Models;
 using BizChat.Data;
+using BizChat.Hubs;
+using BizChat.MiddlewareExtensions;
 using BizChat.Models;
+using BizChat.SubscribeTableDependencies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Chestie pentru real-time messaging
+builder.Services.AddSignalR(o =>
+{
+    o.EnableDetailedErrors = true;
+});
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString), ServiceLifetime.Singleton);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -16,7 +26,11 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>()
     ;
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+builder.Services.AddSingleton<SignalRHub>();
+builder.Services.AddSingleton<SubscribeMessageTableDependency>();
 
 var app = builder.Build();
 
@@ -47,7 +61,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Servers}/{action=Index}/{serverId?}/{channelId?}");
-
+app.MapHub<SignalRHub>("/SignalRHub");
+app.UseSqlTableDependency<SubscribeMessageTableDependency>(connectionString);
 
 app.MapRazorPages();
 

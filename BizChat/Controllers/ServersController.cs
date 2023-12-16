@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Versioning;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -152,7 +153,7 @@ namespace BizChat.Controllers
 		{
 			Channel channel = new Channel();
 			Console.WriteLine(categoryId);
-			channel.ServerId = db.Categories.Find(categoryId).ServerId;
+			channel.ServerId = db.Categories.Find(categoryId)!.ServerId;
 			channel.CategoryId = categoryId;
 			return View(channel);
 		}
