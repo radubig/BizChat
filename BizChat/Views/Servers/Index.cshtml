@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@model BizChat.Models.Server
 
 @{
 	ViewData["Title"] = "Index";
@@ -20,7 +21,7 @@
 			</div>
 		}
 		else
-		{ <!-- Stiu ca arata oribil, rezolvam noi -->
+		{
 			<partial name="ServerContentPartial" />
 		}
 	</div>

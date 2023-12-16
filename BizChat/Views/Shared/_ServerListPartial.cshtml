@@ -1,13 +1,23 @@
 ﻿
+<style>
+    a.serverlist{
+        text-decoration: inherit;
+        color: inherit;
+        border: 1px solid
+    }
+</style>
+
+<a class="serverlist" href="/Servers/NewServer"> Create a new server </a>
+<a class="serverlist mb-2" href="/Servers/SearchServers"> Search for servers to join </a> <!-- TBA -->
 
 @foreach (BizChat.Models.Server server in ViewBag.Servers)
 {
     @if (ViewBag.ServerId != null && server.Id == ViewBag.ServerId)
     {
-        <a style="text-decoration: inherit; color: inherit; background-color:lightgreen; border: 1px solid" href="/Servers/Index/@server.Id">@server.Name</a>
+        <a class="serverlist" style="background-color:lightgreen" href="/Servers/Index/@server.Id">@server.Name</a>
     }
     else
     {
-        <a style="text-decoration: inherit; color: inherit; border: 1px solid" href="/Servers/Index/@server.Id">@server.Name</a>
+        <a class="serverlist" href="/Servers/Index/@server.Id">@server.Name</a>
     }
 }

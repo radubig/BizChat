@@ -4,6 +4,7 @@ using BizChat.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BizChat.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231216103946_DBUpdate6")]
+    partial class DBUpdate6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,9 +237,6 @@ namespace BizChat.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool?>("IsModerator")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsOwner")
                         .HasColumnType("bit");
 
                     b.HasKey("Id", "UserId", "ServerId");
