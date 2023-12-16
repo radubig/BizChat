@@ -24,6 +24,7 @@ namespace BizChat.Data
         {
             base.OnModelCreating(builder);
 
+            // Cheie primara compusa pentru ServerUser
             builder.Entity<ServerUser>()
                 .HasKey(ab => new { ab.Id, ab.UserId, ab.ServerId });
 
@@ -35,7 +36,24 @@ namespace BizChat.Data
             builder.Entity<ServerUser>()
                 .HasOne(ab => ab.Server)
                 .WithMany(ab => ab.Users)
-                .HasForeignKey(ab => ab.ServerId);
+                .HasForeignKey(ab => ab.ServerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Alte relatii definite explicit pentru cascade delete
+            builder.Entity<Server>()
+                .HasMany(s => s.ServerCategories)
+                .WithOne(s => s.Server)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Category>()
+                .HasMany(c => c.Channels)
+                .WithOne(c => c.Category)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Channel>()
+                .HasMany(c => c.ServerMessages)
+                .WithOne(c => c.Channel)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

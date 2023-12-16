@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Versioning;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
@@ -169,6 +170,16 @@ namespace BizChat.Controllers
 			{
 				return View(channel);
 			}
+		}
+
+		[HttpPost]
+		[Authorize(Roles = "AppModerator, AppAdmin")]
+		public IActionResult DeleteServer(int serverId)
+		{
+			// Delete Server with the serverId
+			db.Servers.Remove(db.Servers.Find(serverId)!);
+			db.SaveChanges();
+			return RedirectToAction(controllerName: "Servers", actionName: "Index");
 		}
 	}
 }

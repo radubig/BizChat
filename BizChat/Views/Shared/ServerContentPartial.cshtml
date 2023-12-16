@@ -6,7 +6,9 @@
 			</button>
 			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 				<a class="dropdown-item" href="/Servers/NewCategory/@ViewBag.ServerId">Add Category</a>
-				<a class="dropdown-item" href="#"> <div class="text-danger">Delete Server </div></a> <!-- TBA -->
+				<form method="post" action="/Servers/DeleteServer/@ViewBag.ServerId">
+				<button class="dropdown-item" type="submit"> <div class="text-danger">Delete Server </div></button> <!-- TBA -->
+				</form>
 			</div>
 		</div>
 	</div>
