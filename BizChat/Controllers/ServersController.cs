@@ -15,15 +15,18 @@ namespace BizChat.Controllers
 		private readonly ApplicationDbContext db;
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly RoleManager<IdentityRole> _roleManager;
+		private readonly SignInManager<ApplicationUser> _signInManager;
 
 		public ServersController(
 			ApplicationDbContext context,
 			UserManager<ApplicationUser> userManager,
-			RoleManager<IdentityRole> roleManager)
+			RoleManager<IdentityRole> roleManager,
+			SignInManager<ApplicationUser> signInManager)
 		{
 			db = context;
 			_userManager = userManager;
 			_roleManager = roleManager;
+			_signInManager = signInManager;
 		}
 
 		// Un user poate nu vrea sa aiba propriul server, zic sa renuntam la asta
@@ -51,7 +54,7 @@ namespace BizChat.Controllers
 			string UserId = _userManager.GetUserId(User);
 			var servers = db.Servers.Where(s => s.Users.Where(su => su.UserId == UserId).Count() > 0);
 			ViewBag.Servers = servers;
-			if (serverId != null)
+			if (serverId != null && _signInManager.IsSignedIn(User))
 			{
 				ViewBag.ServerId = serverId;
 
