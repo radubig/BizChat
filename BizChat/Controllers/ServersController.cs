@@ -3,12 +3,6 @@ using BizChat.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using NuGet.Versioning;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 
 namespace BizChat.Controllers
 {
@@ -181,6 +175,20 @@ namespace BizChat.Controllers
 			db.Servers.Remove(db.Servers.Find(serverId)!);
 			db.SaveChanges();
 			return RedirectToAction(controllerName: "Servers", actionName: "Index");
+		}
+
+		[HttpPost]
+		[Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
+		public IActionResult CreateMessage(string content, string channelId)
+		{
+			Message message = new Message();
+			message.Content = content;
+			message.ChannelId = Convert.ToInt32(channelId);
+			message.Date = DateTime.Now;
+			message.UserId = _userManager.GetUserId(User);
+			db.Messages.Add(message);
+			db.SaveChanges();
+			return Json(new { Message = "Success"});
 		}
 	}
 }
