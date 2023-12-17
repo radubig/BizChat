@@ -26,7 +26,7 @@ namespace BizChat.SubscribeTableDependencies
 		{
 			if (e.ChangeType != TableDependency.SqlClient.Base.Enums.ChangeType.None)
 			{
-				await hub.SendMessages();
+				await hub.SendMessages(Convert.ToString(e.Entity.ChannelId)!);
 			}
 		}
 

@@ -10,7 +10,8 @@ $(function () {
 });
 
 function InvokeMessages() {
-	connection.invoke("SendMessages")
+	let channelId = $("#channelId").val();
+	connection.invoke("SendMessages", channelId)
 		.catch(function (err) {
 		return console.error(err.toString());
 	});
@@ -20,7 +21,7 @@ connection.on("ReceivedMessages", function (messages) {
 	let chatBox = $("#chatBox");
 	chatBox.empty();
 	$.each(messages, function (index, message) {
-		chatBox.append(`<p><b>${message.userName}</b>: ${message.content}</p>`)
+		chatBox.append(`<p><b>${message.userName}</b>: ${message.content}</p>`);
 	});
 });
 

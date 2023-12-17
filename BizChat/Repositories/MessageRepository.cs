@@ -14,21 +14,16 @@ namespace BizChat.Repositories
 			this.dbContext = _dbContext;
 		}
 
-		public struct MessageComponents
-		{
-			string UserName;
-			string Content;
-			DateTime Date;
-		}
-
-		public object GetMessages()
+		public object GetMessages(int id)
 		{
 			var lst = from m in dbContext.Messages
+					  where m.ChannelId == id
 					  select new
 					  {
 						  m.User!.UserName,
 						  m.Content,
-						  m.Date
+						  m.Date,
+						  m.ChannelId
 					  };
 
 			var msgList = dbContext.Messages.ToList();

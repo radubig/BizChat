@@ -17,9 +17,10 @@ namespace BizChat.Hubs
             messageRepository = new MessageRepository(connectionString, dbContext);
         }
 
-        public async Task SendMessages()
+        public async Task SendMessages(string channelId)
         {
-            var messages = messageRepository.GetMessages();
+            int id = Convert.ToInt32(channelId);
+            var messages = messageRepository.GetMessages(id);
             await Clients.All.SendAsync("ReceivedMessages", messages);
         }
     }
