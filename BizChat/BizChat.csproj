@@ -16,6 +16,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.24" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
     <PackageReference Include="SqlTableDependency" Version="8.5.8" />
+    <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="23.2.7" />
   </ItemGroup>
 
 </Project>

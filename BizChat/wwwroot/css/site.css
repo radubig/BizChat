@@ -43,10 +43,34 @@ body {
     border: 1px solid transparent;
     border-radius: 5px;
     padding-left: 5px;
+    display: flex;
+    align-items: center;
+}
+.channel>*{
+    display: flex;
+    align-items: center;
 }
 
 .channel:hover {
     border: 1px solid;
+}
+
+.channel_desc{
+    display: flex;
+    align-items: center;
+    padding-left: 0.5em
+}
+
+.channel_desc>*{
+    margin-left: 0.5em
+}
+
+.channel_info{
+    display: flex
+}
+
+.channel_info > *{
+    margin-right: 0.5em
 }
 
 button {

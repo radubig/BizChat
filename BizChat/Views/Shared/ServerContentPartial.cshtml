@@ -5,22 +5,53 @@
 				<span class="bi bi-gear" style="padding-left: 5px"></span> Server Settings
 			</button>
 			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-				<a class="dropdown-item" href="/Servers/NewCategory/@ViewBag.ServerId">Add Category</a>
-				<form method="post" action="/Servers/DeleteServer/@ViewBag.ServerId">
-				<button class="dropdown-item" type="submit"> <div class="text-danger">Delete Server </div></button> <!-- TBA -->
-				</form>
+				@if (ViewBag.IsModerator == true)
+				{
+					<a class="dropdown-item" href="/Servers/NewCategory/@ViewBag.ServerId">Add Category</a>
+				}
+				@if (ViewBag.IsOwner == true)
+				{
+					<a class="dropdown-item" href="/Servers/EditServer/@ViewBag.ServerId">Edit Server</a>
+				}
+				@if (ViewBag.IsOwner == true || ViewBag.UserRole == "AppModerator" || ViewBag.UserRole == "AppAdmin")
+				{
+					<form method="post" action="/Servers/DeleteServer/@ViewBag.ServerId">
+						<button class="dropdown-item" type="submit"> <div class="text-danger">Delete Server </div></button> <!-- TBA -->
+					</form>
+				}
 			</div>
 		</div>
 	</div>
 
 
 	<div class="border" style="grid-row: 1/1; grid-column: 2; text-align: left; display: flex; gap: 1em">
-	@if (ViewBag.selectedChannel != null)
-	{
-		<span style="padding-left: 5px"> <span class="fa-solid fa-hashtag"></span> <b>@ViewBag.selectedChannel.Name</b></span>
-		<span>@ViewBag.selectedChannel.Description</span>
-		<div><span class="fa-regular fa-pen-to-square"></span></div>
-	}
+		@if (ViewBag.selectedChannel != null)
+		{
+			<div class="channel_desc">
+				<span class="fa-solid fa-hashtag"></span>
+				<div id="ChannelDesc" class="channel_info">
+					<b>@ViewBag.selectedChannel.Name</b>
+					<span>@ViewBag.selectedChannel.Description</span>
+					@if (ViewBag.IsModerator == true)
+					{
+						<div><span onclick="editchannel()" class="fa-regular fa-pen-to-square"></span></div>
+					}
+				</div>
+				<div id="ChannelDescForm" style="display: none; align-items: center">
+					<form class="channel_info" method="post" asp-action="EditChannel" asp-controller="Servers">
+						<input id="Name" name="Name" type="text" value="@ViewBag.selectedChannel.Name" />
+						<input id="Description" name="Description" type="text" value="@ViewBag.selectedChannel.Description" />
+						<input type="hidden" name="Id" id="Id" value="@ViewBag.selectedChannel.Id" />
+						<input type="hidden" name="ServerId" id="ServerId" value="@ViewBag.selectedChannel.ServerId" />
+						<button type="submit"> <i class="fa-solid fa-check"></i></button>
+					</form>
+					@if (ViewBag.IsModerator == true)
+					{
+						<div><span onclick="editchannel()" class="fa-solid fa-xmark"></span></div>
+					}
+				</div>
+			</div>
+		}
 	</div>
 
 
@@ -28,48 +59,74 @@
 		<p class="m-0"> <span class="fa-solid fa-magnifying-glass"></span> Search </p>
 	</div>
 
-
 	<div class="border p-1" style="grid-row: 2/2; grid-column: 1; display: flex; flex-direction: column; text-align: left;">
 		@foreach (BizChat.Models.Category category in ViewBag.Categories)
 		{
-			<div class="category">
-				<span>@category.CategoryName</span>
-				<div class="category-buttons">
-					<span class="fa-regular fa-pen-to-square"></span>
-					<a asp-controller="Servers" asp-action="NewChannel" asp-route-categoryId="@category.Id">
-						<span class="fa-solid fa-plus"></span>
-					</a>
+			<div style="display: flex; align-items: center">
+				<i class="fa-solid fa-bars"></i>
+				<div class="category" id="NameCategory_@category.Id">
+					<div style="display: flex; align-items: center">
+						<span>@category.CategoryName</span>
+					</div>
+					@if (ViewBag.IsModerator == true)
+					{
+						<div class="category-buttons">
+							<button onclick="editcateg('Category_@category.Id')"><span class="fa-regular fa-pen-to-square"></span></button>
+							<a asp-controller="Servers" asp-action="NewChannel" asp-route-categoryId="@category.Id">
+								<span class="fa-solid fa-plus"></span>
+							</a>
+						</div>
+					}
 				</div>
+				@if (ViewBag.IsModerator == true)
+				{
+					<div style="display: none; width: 100%" class="category" id="Category_@category.Id">
+						<form method="post" asp-action="Index" asp-controller="Servers"
+					  asp-route-serverId="@ViewBag.ServerId"
+					  asp-route-channelId="@ViewBag.selectedChannel"
+					  asp-route-e_categoryId="@category.Id">
+							@Html.TextBox("CategoryName", null, new {@style = "border: none; width: 100%"})
+						</form>
+						<div class="category-buttons">
+							<button onclick="editcateg('Category_@category.Id')"><span class="fa-solid fa-xmark"></span></button>
+						</div>
+					</div>
+				}
 			</div>
-			@foreach (BizChat.Models.Channel channel in ViewBag.Channels) if(channel.CategoryId == category.Id)
-			{
-				@if (ViewBag.selectedChannel != null && ViewBag.selectedChannel.Id == channel.Id)
+			<div style="margin-bottom: 0.5em"></div>
+			@foreach (BizChat.Models.Channel channel in ViewBag.Channels) if (channel.CategoryId == category.Id)
 				{
-					<a href="/Servers/Index/@ViewBag.ServerId/@channel.Id" style="text-decoration: inherit; color: inherit;">
-					<div class="channel" style="background-color: lightgreen;"> <span class="fa-solid fa-hashtag"></span> @channel.Name </div>
-					</a>
+					@if (ViewBag.selectedChannel != null && ViewBag.selectedChannel.Id == channel.Id)
+					{
+						<a href="/Servers/Index/@ViewBag.ServerId/@channel.Id" style="text-decoration: inherit; color: inherit;">
+							<div class="channel" style="background-color: lightgreen;">
+								<span class="fa-solid fa-hashtag"></span>
+								<div>@channel.Name</div>
+							</div>
+						</a>
+					}
+					else
+					{
+						<a href="/Servers/Index/@ViewBag.ServerId/@channel.Id" style="text-decoration: inherit; color: inherit;">
+							<div class="channel"> <span class="fa-solid fa-hashtag"></span> @channel.Name </div>
+						</a>
+					}
 				}
-				else
-				{
-					<a href="/Servers/Index/@ViewBag.ServerId/@channel.Id" style="text-decoration: inherit; color: inherit;">
-					<div class="channel"> <span class="fa-solid fa-hashtag"></span> @channel.Name </div>
-					</a>
-				}
-			}
+			<div style="margin-bottom: 0.5em"></div>
 		}
 	</div>
 	<div class="border" style="grid-row: 2/2; grid-column: 2/2; display: grid; grid-template-rows: 85% 15%">
-	@if (ViewBag.selectedChannel != null)
-	{	
-		<div id="chatBox" class="border" style="grid-row: 1/1; display: flex; flex-direction:column; text-align: center; justify-content: center; align-items: center">
-		</div>
-		<div class="border" style="grid-row: 2/2; display: flex; justify-content: center; align-items: center; text-align: center">
-			<input type="hidden" id="channelId" value="@ViewBag.selectedChannel.Id" />
-			<input type="text" id="input-message" placeholder="Enter your message" />
-			<button id="sendButton">Send</button>
-			<script src="~/js/chatConnection.js"></script>
-		</div>
-	}
+		@if (ViewBag.selectedChannel != null)
+		{
+			<div id="chatBox" class="border" style="grid-row: 1/1; display: flex; flex-direction:column; text-align: center; justify-content: center; align-items: center">
+			</div>
+			<div class="border" style="grid-row: 2/2; display: flex; justify-content: center; align-items: center; text-align: center">
+				<input type="hidden" id="channelId" value="@ViewBag.selectedChannel.Id" />
+				<input type="text" id="input-message" placeholder="Enter your message" />
+				<button id="sendButton">Send</button>
+				<script src="~/js/chatConnection.js"></script>
+			</div>
+		}
 	</div>
 	<div style="grid-row: 2/2; grid-column: 3/3; display:flex; flex-direction: column">
 		@foreach (var user in ViewBag.ServerMembers)

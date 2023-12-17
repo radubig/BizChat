@@ -1,0 +1,22 @@
+﻿@model BizChat.Models.Server
+
+<div style="grid-column: 1/span 2; height: 100%; width: 100%; display:flex; justify-content: center; align-items: center; flex-direction: column">
+	<h2> Editare Server @Model.Name </h2>
+	@using (Html.BeginForm(actionName: "EditServer", controllerName: "Servers"))
+	{
+		@Html.Label("Name", "Nume Server")
+		@Html.TextBox("Name", null, new { @class="form-control"})
+		@Html.ValidationMessage("Name", null , new { @class="text-danger"})
+
+		@Html.Label("Description", "Descriere Server")
+		@Html.TextArea("Description", null, new { @class="form-control"})
+		@Html.ValidationMessage("Description", null , new { @class="text-danger"})
+
+		@Html.Hidden("Id", Model.Id)
+		<br />
+
+		<button class="btn btn-success" type="submit">
+			Editeaza Server
+		</button>
+	}
+</div>
