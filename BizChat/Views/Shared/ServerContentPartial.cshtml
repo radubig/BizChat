@@ -71,7 +71,9 @@
 					@if (ViewBag.IsModerator == true)
 					{
 						<div class="category-buttons">
-							<button onclick="editcateg('Category_@category.Id')"><span class="fa-regular fa-pen-to-square"></span></button>
+							<button onclick="editcateg('Category_@category.Id')">
+								<span class="fa-regular fa-pen-to-square"></span>
+							</button>
 							<a asp-controller="Servers" asp-action="NewChannel" asp-route-categoryId="@category.Id">
 								<span class="fa-solid fa-plus text-dark"></span>
 							</a>

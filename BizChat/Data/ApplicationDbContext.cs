@@ -17,7 +17,6 @@ namespace BizChat.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Channel> Channels { get; set; }
         public DbSet<Message> Messages { get; set; }
-        public DbSet<ServerRole> ServerRoles { get; set; }
         public DbSet<ServerUser> ServerUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
