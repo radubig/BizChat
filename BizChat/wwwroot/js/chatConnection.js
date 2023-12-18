@@ -2,7 +2,6 @@
 
 $(function () {
 	connection.start().then(function () {
-		console.log('Connected to SignalRHub');
 		InvokeMessages();
 	}).catch(function (err) {
 		return console.error(err.toString());
@@ -11,6 +10,13 @@ $(function () {
 
 function InvokeMessages() {
 	let channelId = $("#channelId").val();
+	console.log('Connected to SignalRHub on room ' + channelId);
+
+	connection.invoke("JoinRoom", channelId)
+		.catch(function (err) {
+			return console.error(err.toString());
+	});
+
 	connection.invoke("SendMessages", channelId)
 		.catch(function (err) {
 		return console.error(err.toString());
