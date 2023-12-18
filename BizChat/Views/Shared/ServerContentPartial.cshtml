@@ -147,7 +147,7 @@
 	<div class="border" style="grid-row: 2/2; grid-column: 2/2; display: grid; grid-template-rows: 85% 15%">
 		@if (ViewBag.selectedChannel != null)
 		{
-			<div id="chatBox" class="border" style="grid-row: 1/1; display: flex; flex-direction:column; text-align: center; justify-content: center; align-items: center">
+			<div id="chatBox" class="border" style="grid-row: 1/1; display: flex; flex-direction:column;">
 			</div>
 			<div class="border" style="grid-row: 2/2; display: flex; justify-content: center; align-items: center; text-align: center">
 				<input type="hidden" id="channelId" value="@ViewBag.selectedChannel.Id" />

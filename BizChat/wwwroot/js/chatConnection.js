@@ -27,8 +27,11 @@ connection.on("ReceivedMessages", function (messages) {
 	let chatBox = $("#chatBox");
 	chatBox.empty();
 	$.each(messages, function (index, message) {
-		chatBox.append(`<p><b>${message.userName}</b>: ${message.content}</p>`);
+		chatBox.append(`<div class="msg-meta bubble-left">${message.userName}<div>`);
+		chatBox.append(`<div class="bubble bubble-left"> ${message.content} </div>`);
 	});
+	chatBox = document.querySelector("#chatBox");
+	chatBox.scrollTop = chatBox.scrollHeight;
 });
 
 $("#sendButton").click(function () {
