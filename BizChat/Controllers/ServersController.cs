@@ -256,17 +256,11 @@ namespace BizChat.Controllers
 		{
 			if(ModelState.IsValid)
 			{
-				db.Channels.Find(channel.Id).Name = channel.Name;
-				db.Channels.Find(channel.Id).Description= channel.Description;
+				db.Channels.Find(channel.Id)!.Name = channel.Name;
+				db.Channels.Find(channel.Id)!.Description= channel.Description;
 				db.SaveChanges();
 			}
 			return RedirectToAction(actionName: "Index", routeValues: new { serverId = channel.ServerId, channelId = channel.Id });
-		}
-
-		[NonAction]
-		public void DeleteChannelMessages(int channelId)
-		{
-			db.Messages.RemoveRange(db.Messages.Where(m => m.ChannelId == channelId));
 		}
 
 		[HttpPost]
@@ -274,23 +268,53 @@ namespace BizChat.Controllers
 		public IActionResult DeleteServer(int serverId)
 		{
 			List<string> high_role_ids = (from r in db.Roles where r.Name != "RegisteredUser" select r.Id).ToList();
-			// Delete Server with the serverId
 			var user_id = _userManager.GetUserId(User);
 			var user_role_in_server = db.ServerUsers.Where(su => su.UserId == user_id && su.ServerId == serverId).First();
 			if (user_role_in_server.IsOwner == true || db.UserRoles.Where(ur => ur.UserId == user_id && high_role_ids.Contains<string>(ur.RoleId)).First() != null)
 			{
-				Console.WriteLine("~~~~~~~~~ Delete server with ID " + serverId);
 				db.Servers.Remove(db.Servers.Find(serverId)!);
-				/* Partea asta ar trebui in mod normal sa se stearga in cascada
-				var s_channels = db.Channels.Where(c => c.ServerId == serverId);
-				foreach (var channel in s_channels)
-				{
-					DeleteChannelMessages(channel.Id);
-				}
-				*/
 				db.SaveChanges();
 			}
 			return RedirectToAction(controllerName: "Servers", actionName: "Index");
+		}
+
+		[Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
+		public IActionResult DeleteCategory(int categoryId)
+		{
+			Category category = db.Categories.Find(categoryId)!;
+			int? _serverId = category.ServerId;
+
+			// Validarea este preluata de la DeleteServer()
+			List<string> high_role_ids = (from r in db.Roles where r.Name != "RegisteredUser" select r.Id).ToList();
+			var user_id = _userManager.GetUserId(User);
+			var user_role_in_server = db.ServerUsers.Where(su => su.UserId == user_id && su.ServerId == _serverId).First();
+			if (user_role_in_server.IsOwner == true || db.UserRoles.Where(ur => ur.UserId == user_id && high_role_ids.Contains<string>(ur.RoleId)).First() != null)
+			{
+				db.Categories.Remove(category);
+				db.SaveChanges();
+			}
+
+			return RedirectToAction(controllerName: "Servers", actionName: "Index", routeValues: new { serverId = _serverId });
+		}
+
+		[Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
+		public IActionResult DeleteChannel(int channelId)
+		{
+			Channel channel = db.Channels.Find(channelId)!;
+			int? _serverId = channel.ServerId;
+
+
+			// Validarea este preluata de la DeleteServer()
+			List<string> high_role_ids = (from r in db.Roles where r.Name != "RegisteredUser" select r.Id).ToList();
+			var user_id = _userManager.GetUserId(User);
+			var user_role_in_server = db.ServerUsers.Where(su => su.UserId == user_id && su.ServerId == _serverId).First();
+			if (user_role_in_server.IsOwner == true || db.UserRoles.Where(ur => ur.UserId == user_id && high_role_ids.Contains<string>(ur.RoleId)).First() != null)
+			{
+				db.Channels.Remove(channel);
+				db.SaveChanges();
+			}
+
+			return RedirectToAction(controllerName: "Servers", actionName: "Index", routeValues: new { serverId = _serverId });
 		}
 
 		[HttpPost]

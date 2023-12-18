@@ -43,12 +43,25 @@ body {
     border: 1px solid transparent;
     border-radius: 5px;
     padding-left: 5px;
+    padding-right: 5px;
     display: flex;
-    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
+
+/*
 .channel>*{
     display: flex;
     align-items: center;
+}
+*/
+
+.channel > .category-buttons {
+    visibility: hidden;
+}
+
+.channel:hover > .category-buttons {
+    visibility: visible;
 }
 
 .channel:hover {
@@ -77,4 +90,8 @@ button {
     background-color: inherit;
     border: inherit;
     padding: inherit;
+}
+
+.channel-name {
+    width: 100%;
 }

@@ -77,6 +77,9 @@
 							<a asp-controller="Servers" asp-action="NewChannel" asp-route-categoryId="@category.Id">
 								<span class="fa-solid fa-plus text-dark"></span>
 							</a>
+							<a asp-controller="Servers" asp-action="DeleteCategory" asp-route-categoryId="@category.Id">
+								<span class="fa-regular fa-trash-can text-dark"></span>
+							</a>
 						</div>
 					}
 				</div>
@@ -100,17 +103,41 @@
 				{
 					@if (ViewBag.selectedChannel != null && ViewBag.selectedChannel.Id == channel.Id)
 					{
-						<a href="/Servers/Index/@ViewBag.ServerId/@channel.Id" style="text-decoration: inherit; color: inherit;">
+						<a href="/Servers/Index/@ViewBag.ServerId/@channel.Id" style="text-decoration: inherit; color: inherit; width:100%;">
 							<div class="channel" style="background-color: lightgreen;">
-								<span class="fa-solid fa-hashtag"></span>
-								<div>@channel.Name</div>
+								<div>
+									<span class="fa-solid fa-hashtag"></span>
+									<span>@channel.Name</span>
+								</div>
+								@if (ViewBag.IsModerator == true)
+								{
+									<div class="category-buttons">
+										<a href="/Servers/DeleteChannel?channelId=@channel.Id">
+											<span class="fa-regular fa-trash-can text-dark"></span>
+										</a>
+									</div>
+								}
 							</div>
 						</a>
 					}
 					else
 					{
-						<a href="/Servers/Index/@ViewBag.ServerId/@channel.Id" style="text-decoration: inherit; color: inherit;">
-							<div class="channel"> <span class="fa-solid fa-hashtag"></span> @channel.Name </div>
+						<a href="/Servers/Index/@ViewBag.ServerId/@channel.Id" style="text-decoration: inherit; color: inherit; width:100%;">
+							<div class="channel">
+								<div>
+									<span class="fa-solid fa-hashtag"></span>
+									<span class="channel-name">@channel.Name</span>
+								</div>
+								@if (ViewBag.IsModerator == true)
+								{
+									<div class="category-buttons">
+										@*<a asp-controller="Servers" asp-action="DeleteCategory" asp-route-categoryId="@category.Id">*@
+										<a href="/Servers/DeleteChannel?channelId=@channel.Id">
+											<span class="fa-regular fa-trash-can text-dark"></span>
+										</a>
+									</div>
+								}
+							</div>
 						</a>
 					}
 				}

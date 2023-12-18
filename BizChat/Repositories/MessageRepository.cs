@@ -16,7 +16,16 @@ namespace BizChat.Repositories
 
 		public object GetMessages(int id)
 		{
-			var lst = from m in dbContext.Messages
+			var msgList = dbContext.Messages.Where(m => m.ChannelId == id).ToList();
+			if (msgList.Count > 0)
+			{
+				foreach (var emp in msgList)
+				{
+					dbContext.Entry(emp).Reload();
+				}
+			}
+
+			var lst = from m in msgList
 					  where m.ChannelId == id
 					  select new
 					  {
@@ -26,13 +35,6 @@ namespace BizChat.Repositories
 						  m.ChannelId
 					  };
 
-			var msgList = dbContext.Messages.ToList();
-			foreach (var emp in msgList)
-			{
-				dbContext.Entry(emp).Reload();
-			}
-
-			//var f = dbContext.Product.ToList();
 			return lst.ToList();
 		}
 	}
