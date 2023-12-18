@@ -3,14 +3,6 @@
 
 // Write your JavaScript code.
 
-window.onload = function () {
-    console.log('salut');
-}
-
-function test22() {
-    console.log('nnasd23');
-}
-
 function editcateg(categ_id) {
     let edit_div = document.getElementById(categ_id);
     let name_div = document.getElementById('Name' + categ_id);
@@ -27,6 +19,12 @@ function editcateg(categ_id) {
     else {
         name_div.style.display = 'none';
     }
+
+    // Da focus pe element si muta cursorul pe ultima pozitie
+    const input = edit_div.firstElementChild.firstElementChild
+    const end = input.value.length;
+    input.setSelectionRange(end, end);
+    input.focus();
 }
 
 function editchannel() {

@@ -73,7 +73,7 @@
 						<div class="category-buttons">
 							<button onclick="editcateg('Category_@category.Id')"><span class="fa-regular fa-pen-to-square"></span></button>
 							<a asp-controller="Servers" asp-action="NewChannel" asp-route-categoryId="@category.Id">
-								<span class="fa-solid fa-plus"></span>
+								<span class="fa-solid fa-plus text-dark"></span>
 							</a>
 						</div>
 					}
@@ -85,7 +85,7 @@
 					  asp-route-serverId="@ViewBag.ServerId"
 					  asp-route-channelId="@ViewBag.selectedChannel"
 					  asp-route-e_categoryId="@category.Id">
-							@Html.TextBox("CategoryName", null, new {@style = "border: none; width: 100%"})
+							@Html.TextBox("CategoryName", category.CategoryName, new {@style = "border: none; width: 100%"})
 						</form>
 						<div class="category-buttons">
 							<button onclick="editcateg('Category_@category.Id')"><span class="fa-solid fa-xmark"></span></button>
