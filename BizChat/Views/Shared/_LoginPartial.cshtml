@@ -1,46 +1,56 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
 <style>
-    ul > li{
-        padding-right: 1em;
-        height: 100%
-    }
-    li > * {
-        height: 100%;
-    }
+	ul > li {
+		padding-right: 1em;
+		height: 100%
+	}
+
+	li > * {
+		height: 100%;
+	}
 </style>
 <ul class="navbar-nav" style="display: flex; flex-direction: row; padding-left: 1em; height: 100%">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <form class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
-            <button type="submit" class="nav-link btn btn-link text-dark">@User.Identity?.Name</button>
-        </form>
-    </li>
-    <li class="nav-item">
-        <form class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Servers", new { area = "" })">
-            <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <form class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">
-            <button type="submit" class="nav-link btn btn-link text-dark">Register</button>
-        </form>
-    </li>
-    <li class="nav-item">
-        <form class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">
-            <button type="submit" class="nav-link btn btn-link text-dark">Login</button>
-        </form>
-    </li>
-}
-    <!-- Ca sa ne intoarcem usor la index -->
-    <li class="nav-item">
-        <form class="nav-link text-dark">
-            <a class="nav-link btn btn-link text-dark" href="/Servers/Index"> Index </a>
-        </form>
-    </li>
+	@if (SignInManager.IsSignedIn(User))
+	{
+		<li class="nav-item">
+			<form class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+				<button type="submit" class="nav-link btn btn-link text-dark">@User.Identity?.Name</button>
+			</form>
+		</li>
+		<li class="nav-item">
+			<form class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Servers", new { area = "" })">
+				<button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+			</form>
+		</li>
+		@if (User.IsInRole("AppAdmin"))
+		{
+			<li class="nav-item">
+				<form class="nav-link text-dark">
+					<a class="nav-link btn btn-link text-dark" asp-controller="Servers" asp-action="ManageAllUsers"> Manage Users </a>
+				</form>
+			</li>
+		}
+	}
+	else
+	{
+		<li class="nav-item">
+			<form class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">
+				<button type="submit" class="nav-link btn btn-link text-dark">Register</button>
+			</form>
+		</li>
+		<li class="nav-item">
+			<form class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">
+				<button type="submit" class="nav-link btn btn-link text-dark">Login</button>
+			</form>
+		</li>
+	}
+	<!-- Ca sa ne intoarcem usor la index -->
+	<li class="nav-item">
+		<form class="nav-link text-dark">
+			<a class="nav-link btn btn-link text-dark" href="/Servers/Index"> Index </a>
+		</form>
+	</li>
 </ul>

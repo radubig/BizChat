@@ -3,8 +3,11 @@ using BizChat.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 using NuGet.Common;
+using System.Linq;
 
 namespace BizChat.Controllers
 {
@@ -27,7 +30,6 @@ namespace BizChat.Controllers
 			_signInManager = signInManager;
 		}
 
-		// Un user poate nu vrea sa aiba propriul server, zic sa renuntam la asta
 		private void AddDefaultServer()
 		{
 			string UserId = _userManager.GetUserId(User);
@@ -47,38 +49,156 @@ namespace BizChat.Controllers
 			db.SaveChanges();
 		}
 
+		[Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
+		public IActionResult SearchServers()
+		{
+			var search = "";
+			List<int> serverIds = new List<int>();
+			if (Convert.ToString(HttpContext.Request.Query["search"]) != null)
+			{
+				search = Convert.ToString(HttpContext.Request.Query["search"]).Trim();
+				serverIds = (from s in db.Servers where (s.Name.Contains(search) || s.Description.Contains(search)) select s.Id).ToList(); 
+			}
+			var UserId = _userManager.GetUserId(User);
+			List<int?> JoinedServerIds = (from su in db.ServerUsers where su.UserId == UserId select su.ServerId).ToList(); // id-urile serverelor in care ne aflam
+			if(serverIds.Any())ViewBag.AllServers = db.Servers.Where(s => JoinedServerIds.Contains(s.Id) == false && serverIds.Contains(s.Id));
+			else
+			{
+				ViewBag.AllServers = db.Servers.Where(s => JoinedServerIds.Contains(s.Id) == false);
+			}
+			ViewBag.UId = UserId;
+			return View();
+		}
+
+		[Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
+		public IActionResult JoinRequest(string UId, int SId)
+		{
+			if (db.ServerUsers.Where(su => su.UserId == UId && su.ServerId == SId).Count() == 0) // ce cauti aici daca esti deja in server
+			{
+				ServerUser serverUser = new ServerUser();
+				serverUser.UserId = UId;
+				serverUser.ServerId = SId;
+				List<string> modroles = (from r in db.Roles where r.Name == "AppModerator" || r.Name == "AppAdmin" select r.Id).ToList();
+				if (modroles.Contains(db.UserRoles.Where(ur => ur.UserId == UId).First().RoleId) == false) serverUser.IsWaiting = true; // daca e mod/admin nu trebuie aprobat
+				db.ServerUsers.Add(serverUser);
+				db.SaveChanges();
+			}
+			return RedirectToAction("SearchServers");
+		}
+
+		[Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
+		public IActionResult ManageServerUsers(int serverId)
+		{
+			if (db.ServerUsers.Where(su => su.ServerId == serverId && su.UserId == _userManager.GetUserId(User)).Count() > 0)
+			{
+				ViewBag.IsModerator = db.ServerUsers.Where(su => su.ServerId == serverId && su.UserId == _userManager.GetUserId(User)).First().IsModerator;
+				ViewBag.IsOwner = db.ServerUsers.Where(su => su.ServerId == serverId && su.UserId == _userManager.GetUserId(User)).First().IsOwner;
+				ViewBag.serverId = serverId;
+				ViewBag.Users = db.ServerUsers.Where(su => su.ServerId == serverId).Join(db.ApplicationUsers, su => su.UserId, au => au.Id,
+												(su, au) => new { su.UserId, su.IsWaiting, su.IsModerator, su.IsOwner, au.UserName });
+				return View();
+			}
+			return RedirectToAction("Index");
+		}
+
+		[Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
+		public IActionResult RequestResponse(int serverId, string userId, bool response)
+		{
+			ServerUser req_su = db.ServerUsers.Where(su => su.ServerId == serverId && su.UserId == userId).First();
+			if (response == true)
+			{
+				req_su.IsWaiting = false;
+			}
+			else
+			{
+				db.Remove(req_su);
+			}
+			db.SaveChanges();
+			return RedirectToAction(actionName: "ManageServerUsers", routeValues: new { serverId });
+		}
+
+		[Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
+		public IActionResult KickFromServer(int serverId, string userId)
+		{
+			db.Remove(db.ServerUsers.Where(su => su.ServerId == serverId && su.UserId == userId).First());
+			db.SaveChanges();
+			return RedirectToAction(actionName: "ManageServerUsers", routeValues: new { serverId });
+		}
+
+		[Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
+		public IActionResult ChangeMod(int serverId, string userId)
+		{
+			ServerUser su = db.ServerUsers.Where(su => su.ServerId == serverId && su.UserId == userId).First();
+			su.IsModerator = su.IsModerator == true ? false : true;
+			db.SaveChanges();
+			return RedirectToAction(actionName: "ManageServerUsers", routeValues: new { serverId });
+		}
+
+		[Authorize(Roles = "AppAdmin")]
+		public IActionResult ManageAllUsers()
+		{
+			ViewBag.AllUsers = db.Users.Join(db.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u.Id, u.UserName, ur.RoleId })
+										.Join(db.Roles, uur => uur.RoleId, r => r.Id, (uur, r) => new { uur.Id, uur.UserName, RoleName = r.Name });
+			return View();
+		}
+
+		[Authorize(Roles = "AppAdmin")]
+		public IActionResult ChangeAppMod(string userId)
+		{
+			var Role = db.Roles.Where(r => r.Id == (db.UserRoles.Where(ur => ur.UserId == userId).First().RoleId)).First().Name;
+			if (Role == "AppModerator")
+			{
+				db.UserRoles.Remove(db.UserRoles.Where(ur => ur.UserId == userId).First());
+				db.UserRoles.Add(new IdentityUserRole<string> { UserId = userId, RoleId = db.Roles.Where(r => r.Name == "RegisteredUser").First().Id });
+			}
+			else
+			{
+				if (Role == "RegisteredUser")
+				{
+					db.UserRoles.Remove(db.UserRoles.Where(ur => ur.UserId == userId).First());
+					db.UserRoles.Add(new IdentityUserRole<string> { UserId = userId, RoleId = db.Roles.Where(r => r.Name == "AppModerator").First().Id });
+				}
+			}
+			db.SaveChanges();
+			return RedirectToAction("ManageAllUsers");
+		}
+
 		public IActionResult Index(int? serverId, int? channelId)
 		{
 			string UserId = _userManager.GetUserId(User);
-			var servers = db.Servers.Where(s => s.Users.Where(su => su.UserId == UserId).Count() > 0);
+			var servers = db.Servers.Where(s => s.Users.Where(su => su.UserId == UserId && su.IsWaiting == false).Count() > 0);
 			ViewBag.Servers = servers;
-			if (serverId != null && _signInManager.IsSignedIn(User))
+			if (db.ServerUsers.Where(su => su.UserId == UserId && su.ServerId == serverId).Count() > 0)
 			{
-				ViewBag.ServerId = serverId;
-
-				// retrieve all channels
-				var channels = db.Channels.Where(channel => channel.ServerId == serverId);
-				ViewBag.Channels = channels;
-
-				// retrieve all server members
-				var servermembers = db.ServerUsers.Where(su => su.ServerId == serverId);
-				ViewBag.ServerMembers = db.ApplicationUsers.
-										Where(user => servermembers.Where(sm => sm.UserId == user.Id).First() != null);
-
-				// retrieve all categories of the server
-				IQueryable<Category>? categories = db.Categories.Where(c => c.ServerId == serverId);
-				ViewBag.Categories = categories;
-
-				if (channelId != null)
+				if (serverId != null && _signInManager.IsSignedIn(User) && db.ServerUsers.Where(su => su.UserId == UserId && su.ServerId == serverId).First().IsWaiting == false)
 				{
-					Channel? selectedChannel = db.Channels.Find(channelId);
-					ViewBag.selectedChannel = selectedChannel;
+					ViewBag.ServerId = serverId;
+
+					// retrieve all channels
+					var channels = db.Channels.Where(channel => channel.ServerId == serverId);
+					ViewBag.Channels = channels;
+
+					// retrieve all server members
+					var servermembers = db.ServerUsers.Where(su => su.ServerId == serverId && su.IsWaiting == false);
+					var waitingservermembers = db.ServerUsers.Where(su => su.ServerId == serverId && su.IsWaiting == true);
+					ViewBag.ServerMembers = db.ApplicationUsers.
+											Where(user => servermembers.Where(sm => sm.UserId == user.Id).First() != null);
+
+					// retrieve all categories of the server
+					IQueryable<Category>? categories = db.Categories.Where(c => c.ServerId == serverId);
+					ViewBag.Categories = categories;
+
+					if (channelId != null)
+					{
+						Channel? selectedChannel = db.Channels.Find(channelId);
+						ViewBag.selectedChannel = selectedChannel;
+					}
+					// cam asa ar trebui sa facem verificarile
+					ViewBag.IsModerator = db.ServerUsers.Where(su => su.ServerId == serverId && su.UserId == _userManager.GetUserId(User)).First().IsModerator;
+					ViewBag.IsOwner = db.ServerUsers.Where(su => su.ServerId == serverId && su.UserId == _userManager.GetUserId(User)).First().IsOwner;
+					ViewBag.UserRole = db.Roles.Find(db.UserRoles.Where(u => u.UserId == _userManager.GetUserId(User)).First().RoleId).Name;
+					// in view verificam ViewBag.IsModerator == true
 				}
-				// cam asa ar trebui sa facem verificarile
-				ViewBag.IsModerator = db.ServerUsers.Where(su => su.ServerId == serverId && su.UserId == _userManager.GetUserId(User)).First().IsModerator;
-				ViewBag.IsOwner = db.ServerUsers.Where(su => su.ServerId == serverId && su.UserId == _userManager.GetUserId(User)).First().IsOwner;
-				ViewBag.UserRole = db.Roles.Find(db.UserRoles.Where(u => u.UserId == _userManager.GetUserId(User)).First().RoleId).Name;
-				// in view verificam ViewBag.IsModerator == true
 			}
 			return View();
 		}
@@ -252,12 +372,12 @@ namespace BizChat.Controllers
 
 		[HttpPost]
 		[Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
-		public IActionResult EditChannel([FromForm]Channel channel)
+		public IActionResult EditChannel([FromForm] Channel channel)
 		{
-			if(ModelState.IsValid)
+			if (ModelState.IsValid)
 			{
 				db.Channels.Find(channel.Id)!.Name = channel.Name;
-				db.Channels.Find(channel.Id)!.Description= channel.Description;
+				db.Channels.Find(channel.Id)!.Description = channel.Description;
 				db.SaveChanges();
 			}
 			return RedirectToAction(actionName: "Index", routeValues: new { serverId = channel.ServerId, channelId = channel.Id });

@@ -1,0 +1,22 @@
+﻿
+
+<div style="grid-column: 1/span2; display: flex; flex-direction: column; justify-content: center; align-items: center">
+	<ul style="margin-top: 10em; width: 30em; height: 40em; overflow: auto" class="list-group">
+		@foreach (var user in ViewBag.AllUsers)
+		{
+			<li class="list-group-item">
+				<div style="display: flex; flex-direction: column">
+					<h4> @user.UserName</h4>
+					@if (user.RoleName == "RegisteredUser")
+					{
+						<a asp-controller="Servers" asp-action="ChangeAppMod" asp-route-userId="@user.Id" class="btn btn-info"> Make App Moderator </a>
+					}
+					@if (user.RoleName == "AppModerator")
+					{
+						<a asp-controller="Servers" asp-action="ChangeAppMod" asp-route-userId="@user.Id" class="btn btn-danger"> Demote App Moderator </a>
+					}
+				</div>
+			</li>
+		}
+	</ul>
+</div>

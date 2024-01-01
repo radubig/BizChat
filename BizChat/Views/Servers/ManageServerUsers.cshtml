@@ -1,0 +1,58 @@
+﻿se
+
+<div style="grid-column: 1/span2; display: flex; flex-direction: column; justify-content: center; align-items: center">
+	@if (ViewBag.IsModerator == true)
+	{
+		<ul style="margin-top: 10em; width: 30em; height: 40em; overflow: auto" class="list-group">
+			@foreach (var user in ViewBag.Users)
+			{
+				<li class="list-group-item">
+					<div style="display: flex; flex-direction: column">
+					<h4> @user.UserName </h4>
+					@if (user.IsWaiting)
+					{
+							<a asp-controller="Servers" asp-action="RequestResponse"
+				   asp-route-serverId="@ViewBag.serverId"
+				   asp-route-userId="@user.UserId"
+				   asp-route-response="false"
+				   class="btn btn-danger"> Decline </a>
+							<a asp-controller="Servers" asp-action="RequestResponse"
+				   asp-route-serverId="@ViewBag.serverId"
+				   asp-route-userId="@user.UserId"
+				   asp-route-response="true"
+				   class="btn btn-success"> Accept </a>
+					}
+					else
+					{
+							@if (user.IsOwner == false)
+							{
+								@if (user.IsModerator == false || (user.IsModerator == true && ViewBag.IsOwner == true))
+								{
+									<a asp-controller="Servers" asp-action="KickFromServer"
+				   asp-route-serverId="@ViewBag.serverId"
+				   asp-route-userId="@user.UserId"
+						   class="btn btn-danger"> Kick </a>
+								}
+							}
+							@if (user.IsModerator == false)
+							{
+								<a asp-controller="Servers" asp-action="ChangeMod"
+				   asp-route-serverId="@ViewBag.serverId"
+				   asp-route-userId="@user.UserId"
+					   class="btn btn-info"> Make Moderator </a>
+							}
+							else
+							{
+								<a asp-controller="Servers" asp-action="ChangeMod"
+				   asp-route-serverId="@ViewBag.serverId"
+				   asp-route-userId="@user.UserId"
+					   class="btn btn-danger"> Remove Moderator</a>
+							}
+					}
+					</div>
+				</li>
+			}
+		</ul>
+	}
+	<a asp-controller="Servers" asp-action="Index" asp-route-serverId="@ViewBag.serverId" class="btn btn-info" style="margin-bottom: 10em"> Return </a>
+</div>

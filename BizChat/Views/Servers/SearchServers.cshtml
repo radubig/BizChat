@@ -1,0 +1,25 @@
+﻿
+<div style="grid-column: 1/span2; display: grid; grid-template-rows: 10% 90%">
+	<div>
+		<form method="GET">
+			<div class="input-group mb-3">
+				<input type="text" class="form-control"
+					   placeholder="Search for server names and descriptions" name="search"
+					   value="" style="width: 20%; margin: 2em 2em">
+			</div>
+		</form>
+	</div>
+	<div style="display: flex; flex-wrap: wrap">
+		@foreach (var server in ViewBag.AllServers)
+		{
+			<div class="card" style="width: 15em; margin: 2em 2em; height: 20em">
+				<div class="card-body" style="display: grid; grid-template-rows: 10% 5% 71% 14%">
+					<h4 class="card-title" style="grid-row: 1/1"> @server.Name </h4>
+					<div class="card-text" style="grid-row: 3/3"> @server.Description </div>
+					<a asp-controller="Servers" asp-action="JoinRequest" asp-route-UId="@ViewBag.UId" asp-route-SId="@server.Id" class="btn btn-success" style="grid-row: 4/4"> Request to join </a>
+				</div>
+			</div>
+		}
+	</div>
+</div>
+
