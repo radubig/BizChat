@@ -11,8 +11,12 @@
 	li > * {
 		height: 100%;
 	}
+	li > form{
+		display: flex !important;
+		align-items: center;
+	}
 </style>
-<ul class="navbar-nav" style="display: flex; flex-direction: row; padding-left: 1em; height: 100%">
+<ul class="navbar-nav" style="display: flex; flex-direction: row; padding-left: 1em; height: 100%; align-items: center">
 	@if (SignInManager.IsSignedIn(User))
 	{
 		<li class="nav-item">
