@@ -5,8 +5,8 @@ namespace BizChat.Models
     public class Channel
     {
         [Key] public int Id { get; set; }
-        [Required] public string? Name { get; set; }
-        [Required] public string? Description { get; set; }
+        [Required(ErrorMessage = "The channel name cannot be empty")] public string? Name { get; set; }
+        [Required(ErrorMessage = "The channel description cannot be empty")] public string? Description { get; set; }
 
         public int? ServerId { get; set; }
         public int? CategoryId { get; set; }

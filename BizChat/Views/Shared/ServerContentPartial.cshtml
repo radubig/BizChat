@@ -1,4 +1,4 @@
-﻿<div style="height: 100%; display: grid; grid-template-rows: 4% 96%; grid-template-columns: 20% 60% 20%">
+﻿<div style="height: 100%; display: grid; grid-template-rows: 30px auto; grid-template-columns: 200px auto 200px">
 	<div class="border" style="grid-row: 1/1; grid-column: 1/2; display: flex">
 		<div class="dropdown" style="width: 100%; height: 100%">
 			<button id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 100%; height: 100%">
@@ -57,7 +57,7 @@
 
 
 	<div class="border" style="grid-row: 1/1; grid-column: 3/3; text-align: center; display: flex; justify-content: center; align-items: center">
-		<p class="m-0"> <span class="fa-solid fa-magnifying-glass"></span> Search </p>
+		<p class="m-0"> <i class="fa-solid fa-user-group"></i> Server Members </p>
 	</div>
 
 	<div class="border p-1" style="grid-row: 2/2; grid-column: 1; display: flex; flex-direction: column; text-align: left;">
@@ -75,7 +75,7 @@
 							<button onclick="editcateg('Category_@category.Id')">
 								<span class="fa-regular fa-pen-to-square"></span>
 							</button>
-							<a asp-controller="Servers" asp-action="NewChannel" asp-route-categoryId="@category.Id">
+							<a asp-controller="Servers" asp-action="NewChannel" asp-route-categoryId="@category.Id" asp-route-serverId="@ViewBag.ServerId">
 								<span class="fa-solid fa-plus text-dark"></span>
 							</a>
 							<a asp-controller="Servers" asp-action="DeleteCategory" asp-route-categoryId="@category.Id">

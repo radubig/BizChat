@@ -1,11 +1,13 @@
 ﻿@model BizChat.Models.Category
 
 <div style="grid-column: 1/span 2; height: 100%; width: 100%; display:flex; justify-content: center; align-items: center; flex-direction: column">
-	<h3>Adaugare Categorie</h3>
+	
+	<h3>Create new Category</h3>
+	<p>server: @ViewBag.ServerName</p>
 	<br />
-	@using (Html.BeginForm(actionName: "NewCategory", controllerName: "Servers"))
+	@using (Html.BeginForm(actionName: "NewCategory", controllerName: "Servers", routeValues: new { serverId = ViewBag.ServerId}))
 	{
-		@Html.Label("CategoryName", "Nume Categorie")
+		@Html.Label("CategoryName", "Category Name")
 		@Html.TextBox("CategoryName", null, new { @class="form-control"})
 		@Html.ValidationMessage("CategoryName", null , new { @class="text-danger"})
 
@@ -14,7 +16,7 @@
 		<br />
 
 		<button class="btn btn-success" type="submit">
-			Creeaza Categorie
+			Add Category
 		</button>
 	}
 </div>

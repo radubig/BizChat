@@ -134,3 +134,10 @@ button {
 .msg-meta {
 
 }
+
+.identitygrid {
+    grid-column: 1/span 2; 
+    display:grid; 
+    grid-template-rows: 20% 60% 20%; 
+    grid-template-columns: 35% 30% 35%;
+}

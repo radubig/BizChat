@@ -319,11 +319,12 @@ namespace BizChat.Controllers
 			Console.WriteLine(serverId);
 			Console.WriteLine(_userManager.GetUserId(User));
 			var IsModerator = db.ServerUsers.Where(su => su.ServerId == serverId && su.UserId == _userManager.GetUserId(User)).First().IsModerator;
-			if (IsModerator == true)
+			if (IsModerator == true && db.Servers.Find(serverId) != null)
 			{
 				ViewBag.ServerId = serverId;
 				Category category = new Category();
 				category.ServerId = serverId;
+				ViewBag.ServerName = db.Servers.Find(serverId).Name;
 				return View(category);
 			}
 			return RedirectToAction("Index");
@@ -331,7 +332,7 @@ namespace BizChat.Controllers
 
 		[HttpPost]
 		[Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
-		public IActionResult NewCategory(Category category)
+		public IActionResult NewCategory(Category category, int serverId)
 		{
 			if (ModelState.IsValid)
 			{
@@ -341,22 +342,29 @@ namespace BizChat.Controllers
 			}
 			else
 			{
+				ViewBag.ServerName = db.Servers.Find(serverId).Name;
 				return View(category);
 			}
 		}
 
 		[Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
-		public IActionResult NewChannel(int categoryId)
+		public IActionResult NewChannel(int categoryId, int serverId)
 		{
 			Channel channel = new Channel();
-			Console.WriteLine(categoryId);
-			channel.ServerId = db.Categories.Find(categoryId)!.ServerId;
-			channel.CategoryId = categoryId;
-			return View(channel);
+			var IsModerator = db.ServerUsers.Where(su => su.ServerId == serverId && su.UserId == _userManager.GetUserId(User)).First().IsModerator;
+			if (IsModerator == true)
+			{
+				channel.ServerId = db.Categories.Find(categoryId)!.ServerId;
+				channel.CategoryId = categoryId;
+				ViewBag.ServerName = db.Servers.Find(serverId).Name;
+				ViewBag.CategoryName = db.Categories.Find(categoryId).CategoryName;
+				return View(channel);
+			}
+			return RedirectToAction("Index");
 		}
 		[HttpPost]
 		[Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
-		public IActionResult NewChannel(Channel channel)
+		public IActionResult NewChannel(Channel channel, int categoryId, int serverId)
 		{
 			if (ModelState.IsValid)
 			{
@@ -366,6 +374,8 @@ namespace BizChat.Controllers
 			}
 			else
 			{
+				ViewBag.ServerName = db.Servers.Find(serverId).Name;
+				ViewBag.CategoryName = db.Categories.Find(categoryId).CategoryName;
 				return View(channel);
 			}
 		}

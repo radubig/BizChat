@@ -4,7 +4,7 @@
 @{
 	ViewData["Title"] = "Log in";
 }
-<div style="grid-column: 1/span 2; display:grid; grid-template-rows: 20% 60% 20%; grid-template-columns: 35% 30% 35%">
+<div class="identitygrid">
 	<form id="account" method="post" style="grid-row: 2/2; grid-column: 2/2">
 		<h2>Use a local account to log in.</h2>
 		<hr />
@@ -37,9 +37,11 @@
 			<p>
 				<a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
 			</p>
+			<!--
 			<p>
 				<a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
 			</p>
+			-->
 		</div>
 	</form>
 </div>

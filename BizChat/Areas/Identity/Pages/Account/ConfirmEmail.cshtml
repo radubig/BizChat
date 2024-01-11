@@ -1,8 +1,15 @@
 ﻿@page
 @model ConfirmEmailModel
 @{
-    ViewData["Title"] = "Confirm email";
+	ViewData["Title"] = "Confirm email";
 }
 
-<h1>@ViewData["Title"]</h1>
-<partial name="_StatusMessage" model="Model.StatusMessage" />
+<div class="identitygrid">
+	<div style="grid-row: 2/2; grid-column: 2/2">
+		<h1>@ViewData["Title"]</h1>
+		<partial name="_StatusMessage" model="Model.StatusMessage" />
+		<form asp-controller="Servers" asp-action="Index">
+			<input type="submit" class="btn btn-info" value="Return"/>
+		</form>
+	</div>
+</div>
