@@ -86,6 +86,17 @@ connection.on("ReceivedMessages", function (messages) {
 					  </div>`);
 		chatBox.append(div);
 		chatBox.append(`<div class="bubble bubble-left" data-message-id="${message.id}">${message.content}</div>`);
+		if (isSingleLink(message.content)) {
+			if (isImageUrl(message.content)) {
+				chatBox.append(`<img class="bubble bubble-left" src="${message.content}" alt="ghinion de nesansa" />`)
+			}
+			else if (isVideoUrl(message.content)) {
+				chatBox.append(`<video class="bubble bubble-left" controls>
+									<source src="${message.content}" type="video/mp4" />
+									Acest video este doar o iluzie :(
+								</video>`);
+			}
+		}
 	});
 
 	chatBox = document.querySelector("#chatBox");
@@ -116,3 +127,28 @@ $("#sendButton").click(function () {
 	}
 	messageBox.val("").focus();
 });
+
+// functii pentru verificarea link-urilor
+function isSingleLink(inputString) {
+	// Regular expression pattern for a valid URL
+	var urlPattern = /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})(\/\S*)?$/i;
+
+	// Test if the inputString matches the URL pattern
+	return urlPattern.test(inputString);
+}
+
+function isImageUrl(url) {
+	// Define a regular expression pattern for image file extensions
+	var pattern = /\.(png|jpe?g|gif|bmp|tiff)$/i;
+
+	// Use RegExp.test to check if the URL ends with an image extension
+	return pattern.test(url);
+}
+
+function isVideoUrl(url) {
+	// Define a regular expression pattern for image file extensions
+	var pattern = /\.(mp4)$/i;
+
+	// Use RegExp.test to check if the URL ends with an image extension
+	return pattern.test(url);
+}

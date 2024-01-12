@@ -3,6 +3,7 @@ using BizChat.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 
 namespace BizChat.Controllers
 {
@@ -29,7 +30,7 @@ namespace BizChat.Controllers
         [Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
         public IActionResult CreateMessage(string content, string channelId)
         {
-            if (content == null || content == "")
+            if (string.IsNullOrEmpty(content))
                 return Json(new { Message = "Meh" });
             Message message = new Message();
             message.Content = content;
@@ -45,7 +46,7 @@ namespace BizChat.Controllers
         [Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
         public IActionResult EditMessage(string content, string messageId)
         {
-            if(content == null || content == "")
+            if(string.IsNullOrEmpty(content))
                 return Json(new { Message = "Meh" });
             Message message = db.Messages.Find(Convert.ToInt32(messageId))!;
             message.Content = content;
