@@ -27,7 +27,9 @@ connection.on("ReceivedMessages", function (messages) {
 	let chatBox = $("#chatBox");
 	chatBox.empty();
 	$.each(messages, function (index, message) {
-		console.log('g');
+		let div = document.createElement('div');
+		div.setAttribute(class, "msg-meta bubble-left");
+		div.setAttribute()
 		chatBox.append(`<div class="msg-meta bubble-left" style="display: flex; flex-direction: row; align-items: center; justify-content: center">
 							<div style="margin-right: 7px">${message.userName}</div>
 							<div style="margin-right: 7px">${(message.date).substring(11, 19) + ' ' + (message.date).substring(0,10)}</div>
