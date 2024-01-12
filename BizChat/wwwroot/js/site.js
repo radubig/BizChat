@@ -9,6 +9,7 @@ function editcateg(categ_id) {
     console.log(name_div.innerHTML);
     if (edit_div.style.display == 'none') {
         edit_div.style.display = 'flex';
+        console.log('a');
     }
     else {
         edit_div.style.display = 'none';
