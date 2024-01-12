@@ -446,19 +446,5 @@ namespace BizChat.Controllers
 
 			return RedirectToAction(controllerName: "Servers", actionName: "Index", routeValues: new { serverId = _serverId });
 		}
-
-		[HttpPost]
-		[Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
-		public IActionResult CreateMessage(string content, string channelId)
-		{
-			Message message = new Message();
-			message.Content = content;
-			message.ChannelId = Convert.ToInt32(channelId);
-			message.Date = DateTime.Now;
-			message.UserId = _userManager.GetUserId(User);
-			db.Messages.Add(message);
-			db.SaveChanges();
-			return Json(new { Message = "Success" });
-		}
 	}
 }

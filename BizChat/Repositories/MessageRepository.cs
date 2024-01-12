@@ -32,7 +32,8 @@ namespace BizChat.Repositories
 						  m.User!.UserName,
 						  m.Content,
 						  m.Date,
-						  m.ChannelId
+						  m.ChannelId,
+						  m.Id
 					  };
 
 			return lst.ToList();
