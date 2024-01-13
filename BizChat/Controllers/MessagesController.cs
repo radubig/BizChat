@@ -32,12 +32,12 @@ namespace BizChat.Controllers
         {
             if (string.IsNullOrEmpty(content))
                 return Json(new { Message = "Meh" });
-            Message message = new Message();
+			Message message = new Message();
             message.Content = content;
             message.ChannelId = Convert.ToInt32(channelId);
             message.Date = DateTime.Now;
             message.UserId = _userManager.GetUserId(User);
-            db.Messages.Add(message);
+			db.Messages.Add(message);
             db.SaveChanges();
             return Json(new { Message = "Success" });
         }
@@ -46,12 +46,15 @@ namespace BizChat.Controllers
         [Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
         public IActionResult EditMessage(string content, string messageId)
         {
-            if(string.IsNullOrEmpty(content))
+			if (string.IsNullOrEmpty(content))
                 return Json(new { Message = "Meh" });
             Message message = db.Messages.Find(Convert.ToInt32(messageId))!;
-            message.Content = content;
-            message.Date = DateTime.Now;
-            db.SaveChanges();
+            if (message.UserId == _userManager.GetUserId(User))
+            {
+                message.Content = content;
+                message.Date = DateTime.Now;
+				db.SaveChanges();
+			}
             return Json(new { Message = "Success" });
         }
 
@@ -62,8 +65,13 @@ namespace BizChat.Controllers
             int id = Convert.ToInt32(messageId);
             Console.WriteLine("Am sters mesajul " + messageId);
             Message message = db.Messages.Find(id)!;
-            db.Messages.Remove(message);
-            db.SaveChanges();
+			var IsModerator = db.ServerUsers.Where(su => su.ServerId == db.Channels.Find(message.ChannelId).ServerId 
+                                && su.UserId == _userManager.GetUserId(User)).First().IsModerator;
+			if (IsModerator == true || message.UserId == _userManager.GetUserId(User))
+            {
+                db.Messages.Remove(message);
+                db.SaveChanges();
+            }
             return Json(new { Message = "Success" });
         }
     }

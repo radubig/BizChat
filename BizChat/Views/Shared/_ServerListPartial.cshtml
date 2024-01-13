@@ -10,11 +10,12 @@
 <a class="serverlist" href="/Servers/NewServer"> Create a new server </a>
 <a class="serverlist mb-2" href="/Servers/SearchServers"> Search for servers to join </a> <!-- TBA -->
 
+
 @foreach (BizChat.Models.Server server in ViewBag.Servers)
 {
     @if (ViewBag.ServerId != null && server.Id == ViewBag.ServerId)
     {
-        <a class="serverlist" style="background-color:lightgreen" href="/Servers/Index/@server.Id">@server.Name</a>
+            <a class="serverlist" style="background-color:#91C8E4" href="/Servers/Index/@server.Id">@server.Name</a>
     }
     else
     {

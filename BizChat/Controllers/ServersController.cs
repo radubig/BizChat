@@ -204,6 +204,15 @@ namespace BizChat.Controllers
 		}
 
 		[HttpPost]
+		public IActionResult UserInformation(string channelId)
+		{
+			//Console.WriteLine(Convert.ToInt32(channelId) * 100);
+			var serverId = db.Channels.Find(Convert.ToInt32(channelId)).ServerId;
+			var isModerator = db.ServerUsers.Where(su => su.ServerId == serverId && su.UserId == _userManager.GetUserId(User)).First().IsModerator;
+			return Json(new { isMod = isModerator, userId = _userManager.GetUserId(User) });
+		}
+
+		[HttpPost]
 		[Authorize(Roles = "RegisteredUser, AppModerator, AppAdmin")]
 		public IActionResult Index([FromForm] Category category, int? serverId, int? channelId, int? e_categoryId)
 		{

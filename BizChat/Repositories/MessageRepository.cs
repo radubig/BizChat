@@ -33,6 +33,7 @@ namespace BizChat.Repositories
 						  m.Content,
 						  m.Date,
 						  m.ChannelId,
+						  m.UserId,
 						  m.Id
 					  };
 

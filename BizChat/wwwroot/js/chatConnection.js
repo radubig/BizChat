@@ -2,11 +2,32 @@
 var editMessage = false;
 var editMessageId;
 
+var Moderator = false;
+var CurrentUserId;
 $(function () {
 	connection.start().then(function () {
 		InvokeMessages();
 	}).catch(function (err) {
 		return console.error(err.toString());
+	});
+
+	var channelId = $("#channelId").val();
+
+	$.ajax({
+		type: 'POST',
+		url: '/Servers/UserInformation/',
+		data: { channelId },
+		dataType: 'json',
+		cache: false,
+		connection: 'application/json',
+		success: function (ret) {
+			console.log(ret);
+			if (ret.isMod == true) {
+				Moderator = true;
+			}
+			CurrentUserId = ret.userId;
+		},
+		error: function () { },
 	});
 
 	// Attach click event handler to <a> tags
@@ -78,12 +99,31 @@ connection.on("ReceivedMessages", function (messages) {
 	let chatBox = $("#chatBox");
 	chatBox.empty();
 	$.each(messages, function (index, message) {
-		let div = $(`<div class="msg-meta bubble-left" style="display: flex; flex-direction: row; align-items: center; justify-content: center">
+		var div;
+		console.log(message.userId + ' ' + CurrentUserId);
+		if (message.userId == CurrentUserId) {
+			div = $(`<div class="msg-meta bubble-left" style="display: flex; flex-direction: row; align-items: center; justify-content: center">
 						<div style="margin-right: 7px">${message.userName}</div>
 						<div style="margin-right: 7px">${(message.date).substring(11, 19) + ' ' + (message.date).substring(0, 10)}</div>
 						<a class="fa-solid fa-square-pen" style="margin-right: 7px" data-message-id="${message.id}"></a>
 						<a class="fa-solid fa-trash" style="margin-right: 7px" data-message-id="${message.id}"></a>
 					  </div>`);
+		}
+		else {
+			if (Moderator == true) {
+				div = $(`<div class="msg-meta bubble-left" style="display: flex; flex-direction: row; align-items: center; justify-content: center">
+						<div style="margin-right: 7px">${message.userName}</div>
+						<div style="margin-right: 7px">${(message.date).substring(11, 19) + ' ' + (message.date).substring(0, 10)}</div>
+						<a class="fa-solid fa-trash" style="margin-right: 7px" data-message-id="${message.id}"></a>
+					  </div>`);
+			}
+			else {
+				div = $(`<div class="msg-meta bubble-left" style="display: flex; flex-direction: row; align-items: center; justify-content: center">
+						<div style="margin-right: 7px">${message.userName}</div>
+						<div style="margin-right: 7px">${(message.date).substring(11, 19) + ' ' + (message.date).substring(0, 10)}</div>
+					  </div>`);
+			}
+		}
 		chatBox.append(div);
 		chatBox.append(`<div class="bubble bubble-left" data-message-id="${message.id}">${message.content}</div>`);
 		if (isSingleLink(message.content)) {
