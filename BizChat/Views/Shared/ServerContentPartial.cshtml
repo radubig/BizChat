@@ -150,11 +150,13 @@
 		{
 			<div id="chatBox" class="border" style="grid-row: 1/1; display: flex; flex-direction:column; max-height: 85vh">
 			</div>
-			<div class="border" style="grid-row: 2/2; display: flex; justify-content: center; align-items: center; text-align: center; max-hegiht: 10vh">
-				<input type="hidden" id="channelId" value="@ViewBag.selectedChannel.Id" />
-				<input type="text" id="input-message" placeholder="Enter your message" />
-				<button id="sendButton">Send</button>
-				<script src="~/js/chatConnection.js"></script>
+			<div class="border" style="grid-row: 2/2; display: flex; justify-content: center; align-items: center; text-align: center; max-height: 10vh">
+				<div class="input-group" style="display: flex; flex-direction: row!important; padding-top: 1rem !important; padding-bottom: 1rem !important; padding-right: 1.5rem !important; padding-left: 1.5rem !important;">
+					<input type="hidden" id="channelId" value="@ViewBag.selectedChannel.Id" />
+					<input type="text" id="input-message" class="form-control" style="width: auto!important" placeholder="Enter your message" />
+					<button id="sendButton" class="btn btn-primary">Send</button>
+					<script src="~/js/chatConnection.js"></script>
+				</div>
 			</div>
 		}
 	</div>

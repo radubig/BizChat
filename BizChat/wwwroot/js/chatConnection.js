@@ -53,6 +53,15 @@ $(function () {
 		let messageId = $(this).data('message-id');
 		DispatchDeleteMessage(messageId);
 	});
+
+	// Attach event listener to input box when pressing ENTER
+	$("#input-message").on('keypress', function (event) {
+		if (event.which == 13) {
+			onSend();
+		}
+	});
+
+	$("#sendButton").click(onSend);
 });
 
 function InvokeMessages() {
@@ -183,7 +192,7 @@ connection.on("ReceivedMessages", function (messages) {
 	chatBox.scrollTop = chatBox.scrollHeight;
 });
 
-$("#sendButton").click(function () {
+function onSend() {
 	let messageBox = $("#input-message");
 	let msg = messageBox.val();
 	let channelId = $("#channelId").val();
@@ -206,7 +215,7 @@ $("#sendButton").click(function () {
 		});
 	}
 	messageBox.val("").focus();
-});
+}
 
 // functii pentru verificarea link-urilor
 function isSingleLink(inputString) {

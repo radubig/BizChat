@@ -119,7 +119,7 @@ button {
 
 
 .bubble * {
-    max-width: 79vw;
+    max-width: 45vw;
 }
 
 .bubble-left {
@@ -145,4 +145,11 @@ button {
     display:grid; 
     grid-template-rows: 20% 60% 20%; 
     grid-template-columns: 35% 30% 35%;
+}
+
+/* Input class */
+.input-class {
+    display: flex;
+    flex-direction: row !important;
+    padding-top: 1rem !important; padding-bottom: 1rem !important; padding-right: 1.5rem !important; padding-left: 1.5rem !important;
 }
