@@ -39,7 +39,8 @@ $(function () {
 		editMessage = true;
 		editMessageId = messageId;
 
-		let messageContent = $('div[data-message-id="' + messageId + '"]').text();
+		let messageContent = document.querySelectorAll('[data-message-id="' + messageId + '"]')[2].dataset.textcontent;
+		//console.log(document.querySelectorAll('[data-message-id="' + messageId + '"]')[2].dataset.textcontent);
 
 		let messageBox = $("#input-message");
 		messageBox.val(messageContent);
@@ -102,11 +103,11 @@ connection.on("ReceivedMessages", function (messages) {
 		var div;
 		console.log(message.userId + ' ' + CurrentUserId);
 		if (message.userId == CurrentUserId) {
-			div = $(`<div class="msg-meta bubble-left" style="display: flex; flex-direction: row; align-items: center; justify-content: center">
-						<div style="margin-right: 7px">${message.userName}</div>
-						<div style="margin-right: 7px">${(message.date).substring(11, 19) + ' ' + (message.date).substring(0, 10)}</div>
+			div = $(`<div class="msg-meta bubble-right" style="display: flex; flex-direction: row; align-items: center; justify-content: center">
 						<a class="fa-solid fa-square-pen" style="margin-right: 7px" data-message-id="${message.id}"></a>
 						<a class="fa-solid fa-trash" style="margin-right: 7px" data-message-id="${message.id}"></a>
+						<div style="margin-right: 7px">${(message.date).substring(11, 19) + ' ' + (message.date).substring(0, 10)}</div>
+						<div style="margin-right: 7px">${message.userName}</div>
 					  </div>`);
 		}
 		else {
@@ -125,16 +126,55 @@ connection.on("ReceivedMessages", function (messages) {
 			}
 		}
 		chatBox.append(div);
-		chatBox.append(`<div class="bubble bubble-left" data-message-id="${message.id}">${message.content}</div>`);
 		if (isSingleLink(message.content)) {
 			if (isImageUrl(message.content)) {
-				chatBox.append(`<img class="bubble bubble-left" src="${message.content}" alt="ghinion de nesansa" />`)
+				//<div>${message.content}</div>
+				if (message.userId == CurrentUserId) {
+					
+					chatBox.append(`<div class="bubble bubble-right" data-message-id="${message.id}" style="width: auto" data-textcontent="${message.content}">
+										
+										<img src="${message.content}" alt="Imagine" data-img-id="${message.id}" style="max-height: 40vh"/>
+									</div>`);
+					
+				}
+				else {
+					
+					chatBox.append(`<div class="bubble bubble-left" data-message-id="${message.id}" style="width: auto" data-textcontent="${message.content}">
+										
+										<img src="${message.content}" alt="Imagine" data-img-id="${message.id}" style="max-height: 40vh"/>
+										</div>`);
+					
+				}
+
 			}
 			else if (isVideoUrl(message.content)) {
-				chatBox.append(`<video class="bubble bubble-left" controls>
-									<source src="${message.content}" type="video/mp4" />
-									Acest video este doar o iluzie :(
-								</video>`);
+
+				//<div>${message.content}</div>
+				if (message.userId == CurrentUserId) {
+					chatBox.append(`<div class="bubble bubble-right" data-message-id="${message.id}" style="width: auto" data-textcontent="${message.content}">
+										
+										<video controls data-video-id="${message.id}" style="max-height: 40vh">
+										<source src="${message.content}" type="video/mp4" />
+										Video
+										</video>
+									</div>`);
+				}
+				else {
+					chatBox.append(`<div class="bubble bubble-left" data-message-id="${message.id}" style="width: auto" data-textcontent="${message.content}">
+										<video controls data-video-id="${message.id}" style="max-height: 40vh">
+										<source src="${message.content}" type="video/mp4" />
+										Video
+										</video>
+									</div>`);
+				}
+			}
+		}
+		else {
+			if (message.userId == CurrentUserId) {
+				chatBox.append(`<div class="bubble bubble-right" data-message-id="${message.id}" data-textcontent="${message.content}">${message.content}</div>`);
+			}
+			else {
+				chatBox.append(`<div class="bubble bubble-left" data-message-id="${message.id}" data-textcontent="${message.content}">${message.content}</div>`);
 			}
 		}
 	});
