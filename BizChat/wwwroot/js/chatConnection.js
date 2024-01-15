@@ -139,20 +139,20 @@ connection.on("ReceivedMessages", function (messages) {
 			if (isImageUrl(message.content)) {
 				//<div>${message.content}</div>
 				if (message.userId == CurrentUserId) {
-					
+
 					chatBox.append(`<div class="bubble bubble-right" data-message-id="${message.id}" style="width: auto" data-textcontent="${message.content}">
 										
 										<img src="${message.content}" alt="Imagine" data-img-id="${message.id}" style="max-height: 40vh"/>
 									</div>`);
-					
+
 				}
 				else {
-					
+
 					chatBox.append(`<div class="bubble bubble-left" data-message-id="${message.id}" style="width: auto" data-textcontent="${message.content}">
 										
 										<img src="${message.content}" alt="Imagine" data-img-id="${message.id}" style="max-height: 40vh"/>
 										</div>`);
-					
+
 				}
 
 			}
@@ -174,6 +174,18 @@ connection.on("ReceivedMessages", function (messages) {
 										<source src="${message.content}" type="video/mp4" />
 										Video
 										</video>
+									</div>`);
+				}
+			}
+			else {
+				if (message.userId == CurrentUserId) {
+					chatBox.append(`<div class="bubble bubble-right" data-message-id="${message.id}" data-textcontent="${message.content}">
+									<a href="${message.content}" style="color: white">${message.content}</a>
+									</div>`);
+				}
+				else {
+					chatBox.append(`<div class="bubble bubble-left" data-message-id="${message.id}" data-textcontent="${message.content}">
+								    <a href="${message.content}" style="color: white">${message.content}</a>
 									</div>`);
 				}
 			}
